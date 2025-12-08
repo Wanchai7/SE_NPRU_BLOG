@@ -4,11 +4,18 @@ const Header = () => {
   const menuItems = [
     { text: "Login", link: "/login" },
     { text: "Register", link: "/register" },
+    
   ];
+  
   return (
     <div className="navbar bg-base-100 shadow-sm">
       <div className="navbar-start">
-        <a className="btn btn-ghost text-xl">SE NPRU Blog</a>
+        <a
+          onClick={() => navigate("/")}
+          className="btn btn-ghost normal-case text-2xl font-bold cursor-pointer"
+        >
+          SE NPRU Blog
+        </a>
       </div>
 
       <div className="navbar-end">
