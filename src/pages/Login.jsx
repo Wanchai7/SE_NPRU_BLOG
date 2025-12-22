@@ -1,17 +1,25 @@
-import { useState } from "react";
+import { useState, useContext, useEffect } from "react"; // 1. เพิ่ม useContext
 import { useNavigate } from "react-router";
 import AuthService from "../services/authentication.service";
 import Swal from "sweetalert2";
+import { UserContext } from "../context/UserContext"; // 2. แก้ serContext เป็น UserContext
 
 const Login = () => {
+  // 3. เรียกใช้ Context อย่างถูกต้อง
+  const { logIn, userinfo } = useContext(UserContext);
   const navigate = useNavigate();
+  useEffect(() => {
+    if (userinfo) {
+      navigate("/");
+    }
+  }, [userinfo, navigate]);
+
   const [user, setUser] = useState({
     username: "",
     password: "",
   });
 
   const handleSubmit = async () => {
-    // Validation เบื้องต้น
     if (!user.username || !user.password) {
       Swal.fire({
         title: "เกิดข้อผิดพลาด",
@@ -23,28 +31,28 @@ const Login = () => {
 
     try {
       const response = await AuthService.login(user.username, user.password);
-
-      // ลอง console.log ดูค่าที่ Backend ส่งกลับมา (กด F12 ดูใน Console)
       console.log("Response from Backend:", response);
 
-      // เช็คทั้ง 200 และ 201 เพราะบาง Backend ส่ง 200 เมื่อสำเร็จ
       if (response.status === 201 || response.status === 200) {
         Swal.fire({
           title: "เข้าสู่ระบบสำเร็จ",
-          text: response.data.message || "เข้าสู่ระบบสำเร็จ", // ใส่ข้อความสำรองเผื่อ backend ไม่ส่ง message
+          text: response.data.message || "ยินดีต้อนรับ",
           icon: "success",
         }).then(() => {
+          logIn({
+            id: response.data.id,
+            username: response.data.username,
+            accessToken: response.data.accessToken,
+          });
           navigate("/home");
         });
       }
     } catch (error) {
-      // กรณี Error จริงๆ
-      console.error("Error Register:", error); // ดู log error จริงๆ
+      console.error("Error Login:", error);
       Swal.fire({
         title: "เกิดข้อผิดพลาด",
         text:
           error.response?.data?.message ||
-          error.message ||
           "ไม่สามารถเชื่อมต่อกับเซิร์ฟเวอร์ได้",
         icon: "error",
       });
@@ -55,30 +63,31 @@ const Login = () => {
     const { name, value } = event.target;
     setUser((prevUser) => ({ ...prevUser, [name]: value }));
   };
+
   return (
     <div>
       <div className="card bg-base-100 w-96 shadow-sm">
         <div className="card-body items-center text-center">
           <h2 className="card-title">Login</h2>
-          <div className="card-actions">
-            <h1>Username</h1>
+          <div className="card-actions w-full">
+            <h1 className="text-left w-full">Username</h1>
             <input
               type="text"
-              placeholder=""
-              className="input input-neutral"
+              className="input input-neutral w-full"
               name="username"
               onChange={handleChange}
+              value={user.username}
             />
-            <h1>Password</h1>
+            <h1 className="text-left w-full mt-2">Password</h1>
             <input
               type="password"
-              placeholder=""
-              className="input input-neutral"
+              className="input input-neutral w-full"
               name="password"
               onChange={handleChange}
+              value={user.password}
             />
             <button
-              className="btn btn-primary bg-blue-600 items-center text-center card-body"
+              className="btn btn-primary bg-blue-600 w-full mt-4"
               onClick={handleSubmit}
             >
               Login

@@ -1,20 +1,29 @@
-import React from "react";
+import { useContext } from "react";
+import { UserContext } from "../context/UserContext";
 
 const Header = () => {
-  const menuItems = [
+  const { userInfo, logOut } = useContext(UserContext);
+
+  const LoginRegister = [
     { text: "Login", link: "/login" },
     { text: "Register", link: "/register" },
   ];
 
-  const home = [{ text: "SE NPRU Bolg", link: "/home" }];
+  const CreatePostProfile = [
+    { text: "CreatePost", link: "/create" }, // แก้ Link ให้ตรงกับ Router ของคุณ
+    { text: "Profile", link: "/profile" }, // แก้ Link ให้ตรงกับ Router ของคุณ
+  ];
+
+  const home = [{ text: "SE NPRU Blog", link: "/" }];
 
   return (
     <div className="navbar bg-base-100 shadow-sm">
+      {/* ส่วนของ Logo / Home */}
       <div className="navbar-start">
         <ul className="menu menu-horizontal px-6">
           {home.map((item, index) => (
             <li key={index}>
-              <a href={item.link} className="link link-hover">
+              <a href={item.link} className="link link-hover text-xl font-bold">
                 {item.text}
               </a>
             </li>
@@ -22,16 +31,41 @@ const Header = () => {
         </ul>
       </div>
 
-      {/* ส่วนของ Login Register */}
       <div className="navbar-end">
-        {/* แก้ <ui> เป็น <ul> */}
         <ul className="menu menu-horizontal px-1">
-          {menuItems.map((item, index) => (
-            /* เพิ่ม key={index} ตรงนี้ */
-            <li key={index}>
-              <a href={item.link}>{item.text}</a>
-            </li>
-          ))}
+          {userInfo ? (
+            <>
+              {/* โชว์ชื่อ Username */}
+              <li>
+                <span className="font-bold text-primary">
+                  {userInfo.username}
+                </span>
+              </li>
+
+              {/* โชว์ปุ่ม CreatePost และ Profile */}
+              {CreatePostProfile.map((item, index) => (
+                <li key={index}>
+                  <a href={item.link}>{item.text}</a>
+                </li>
+              ))}
+
+              {/* โชว์ปุ่ม Logout */}
+              <li>
+                <a onClick={logOut} className="text-error">
+                  Logout
+                </a>
+              </li>
+            </>
+          ) : (
+            <>
+              {/* โชว์แค่ Login และ Register เท่านั้น */}
+              {LoginRegister.map((item, index) => (
+                <li key={index}>
+                  <a href={item.link}>{item.text}</a>
+                </li>
+              ))}
+            </>
+          )}
         </ul>
       </div>
     </div>
