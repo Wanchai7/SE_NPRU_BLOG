@@ -1,9 +1,8 @@
 import { useState, useEffect } from "react";
 import { UserContext } from "./UserContext";
 import TokenService from "../services/token.service";
-
 export const UserContextProvider = ({ children }) => {
-  const [userInfo, setUserInfo] = useState({ getUser });
+  const [userInfo, setUserInfo] = useState(getUser);
   const logIn = (user) => setUserInfo(user);
   const logOut = () => {
     setUserInfo(null);

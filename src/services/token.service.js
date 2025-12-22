@@ -20,14 +20,13 @@ const setUser = (user) => {
     cookie.set(
       "user",
       JSON.stringify({
-        id: user.id,
-        username: user.username,
+        id: user?.id,
+        username: user?.username,
         accessToken: user?.accessToken,
       }),
       {
         path: "/",
-        expires: new Date(Date.now() + 86400),
-        //24*60*60 = 1 day
+        expires: new Date(Date.now() + 86400), // 24*60*60 = 1 day
       }
     );
   } else {

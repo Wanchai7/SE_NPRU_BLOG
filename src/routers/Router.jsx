@@ -6,20 +6,20 @@ import Create from "../pages/Create";
 import Login from "../pages/Login";
 import Register from "../pages/Register";
 import PostDetail from "../pages/PostDetail";
-import Author from "../pages/Author"
+import Author from "../pages/Author";
 
 const router = createBrowserRouter([
   {
     path: "/",
     element: <Layout />,
     children: [
-      { path: "home", element: <Home /> },
+      { path: "", element: <Home /> },
       { path: "edit/:id", element: <Edit /> },
       { path: "create", element: <Create /> },
       { path: "login", element: <Login /> },
       { path: "register", element: <Register /> },
-      {path:"post/:id", element:<PostDetail/>},
-      {path:"author/id", element:<Author/>}
+      { path: "post/:id", element: <PostDetail /> },
+      { path: "author/:id", element: <Author /> },
     ],
   },
 ]);
