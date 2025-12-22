@@ -10,12 +10,9 @@ const Header = () => {
 
   return (
     <div className="navbar bg-base-100 shadow-sm">
-      {/* ส่วนของ SE NPRU Blog */}
       <div className="navbar-start">
-        {/* แก้ <ui> เป็น <ul> */}
         <ul className="menu menu-horizontal px-6">
           {home.map((item, index) => (
-            /* เพิ่ม key={index} ตรงนี้ */
             <li key={index}>
               <a href={item.link} className="link link-hover">
                 {item.text}

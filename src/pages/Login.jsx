@@ -27,15 +27,14 @@ const Login = () => {
       // ลอง console.log ดูค่าที่ Backend ส่งกลับมา (กด F12 ดูใน Console)
       console.log("Response from Backend:", response);
 
-      // ✅ แก้ไขจุดที่ 1: เช็คทั้ง 200 และ 201 เพราะบาง Backend ส่ง 200 เมื่อสำเร็จ
+      // เช็คทั้ง 200 และ 201 เพราะบาง Backend ส่ง 200 เมื่อสำเร็จ
       if (response.status === 201 || response.status === 200) {
         Swal.fire({
-          title: "สมัครสมาชิกสำเร็จ",
-          text: response.data.message || "การลงทะเบียนเสร็จสมบูรณ์", // ใส่ข้อความสำรองเผื่อ backend ไม่ส่ง message
+          title: "เข้าสู่ระบบสำเร็จ",
+          text: response.data.message || "เข้าสู่ระบบสำเร็จ", // ใส่ข้อความสำรองเผื่อ backend ไม่ส่ง message
           icon: "success",
         }).then(() => {
-          // ✅ แก้ไขจุดที่ 2: สั่งให้เด้งไปหน้า Login หลังจากกด OK
-          navigate("/login");
+          navigate("/home");
         });
       }
     } catch (error) {
