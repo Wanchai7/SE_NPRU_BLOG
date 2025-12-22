@@ -1,39 +1,44 @@
-import React from 'react'
+import React from "react";
 
 const Header = () => {
   const menuItems = [
     { text: "Login", link: "/login" },
-    { text: "Register", link: "/register" }, 
+    { text: "Register", link: "/register" },
   ];
 
-  const home = [
-    { text: "SE NPRU Bolg", link: "/home" },
-  ]
-  
+  const home = [{ text: "SE NPRU Bolg", link: "/home" }];
+
   return (
     <div className="navbar bg-base-100 shadow-sm">
       {/* ส่วนของ SE NPRU Blog */}
       <div className="navbar-start">
-        <ui className="menu menu-horizontal px-6">
-          {home.map((item) => (
-            <li>
-              <a href={item.link} className="link link-hover">{item.text}</a>
+        {/* แก้ <ui> เป็น <ul> */}
+        <ul className="menu menu-horizontal px-6">
+          {home.map((item, index) => (
+            /* เพิ่ม key={index} ตรงนี้ */
+            <li key={index}>
+              <a href={item.link} className="link link-hover">
+                {item.text}
+              </a>
             </li>
           ))}
-        </ui>
+        </ul>
       </div>
+
       {/* ส่วนของ Login Register */}
       <div className="navbar-end">
-        <ui className="menu menu-horizontal px-1">
-          {menuItems.map((item) => (
-            <li>
+        {/* แก้ <ui> เป็น <ul> */}
+        <ul className="menu menu-horizontal px-1">
+          {menuItems.map((item, index) => (
+            /* เพิ่ม key={index} ตรงนี้ */
+            <li key={index}>
               <a href={item.link}>{item.text}</a>
             </li>
           ))}
-        </ui>
+        </ul>
       </div>
     </div>
   );
-}
+};
 
-export default Header
+export default Header;
