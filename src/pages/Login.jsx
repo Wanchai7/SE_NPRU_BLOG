@@ -71,7 +71,7 @@ const Login = () => {
             />
             <h1>Password</h1>
             <input
-              type="text"
+              type="password"
               placeholder=""
               className="input input-neutral"
               name="password"
