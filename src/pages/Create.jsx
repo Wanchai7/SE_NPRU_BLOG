@@ -1,28 +1,38 @@
-import React, { useState } from "react";
+import { useState, useRef } from "react";
 import PostService from "../services/post.service.js";
 import Swal from "sweetalert2";
 import { useNavigate } from "react-router";
+import Editor from "../components/Editor.jsx";
 
 const Create = () => {
   const navigate = useNavigate();
-
+  const editorRef = useRef(null);
+  const [content, setContent] = useState("");
   const [post, setPost] = useState({
     title: "",
-    author: "",
     summary: "",
     content: "",
     cover: "",
+    file: null,
   });
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setPost((prev) => ({ ...prev, [name]: value }));
+    if (name === "file") {
+      setPost({ ...post, [name]: e.target.files[0] });
+    } else {
+      setPost((prev) => ({ ...prev, [name]: value }));
+    }
+  };
+
+  const handleContentChange = (value) => {
+    setContent(value);
+    setPost({ ...post, content: content });
   };
 
   const resetForm = () => {
     setPost({
       title: "",
-      author: "",
       summary: "",
       content: "",
       cover: "",
@@ -37,9 +47,9 @@ const Create = () => {
 
       if (res.status === 201 || res.status === 200) {
         await Swal.fire({
-          title: "Add new post",
-          text: "Post created successfully!",
-          icon: "success",
+          title: "เพิ่ม Post ใหม่",
+          text: "ยินดีด้วยคุณเพิ่ม post สำเร็จแล้วนะ",
+          icon: "สร้าง Post สำเร็จ",
         });
         resetForm();
         navigate("/");
@@ -59,8 +69,7 @@ const Create = () => {
       <div className="w-full max-w-6xl">
         <div className="card bg-base-100 shadow-xl rounded-lg">
           <div className="card-body">
-            <h1 className="text-3xl font-bold text-center mb-8">Create Post</h1>
-
+            <h1 className="text-3xl font-bold text-center mb-8">สร้าง Post</h1>
             <form
               onSubmit={handleSubmit}
               className="grid grid-cols-1 md:grid-cols-3 gap-6"
@@ -69,7 +78,7 @@ const Create = () => {
               <div className="md:col-span-1">
                 <label className="label">
                   <span className="label-text font-semibold">
-                    Cover Image URL
+                    Cover Image URL (รูปปก)
                   </span>
                 </label>
                 <input
@@ -97,7 +106,9 @@ const Create = () => {
               <div className="md:col-span-2 grid grid-cols-1 gap-4">
                 <div>
                   <label className="label">
-                    <span className="label-text font-semibold">Title</span>
+                    <span className="label-text font-semibold">
+                      Title(ชื่อบทความ)
+                    </span>
                   </label>
                   <input
                     type="text"
@@ -111,7 +122,9 @@ const Create = () => {
                 </div>
                 <div>
                   <label className="label">
-                    <span className="label-text font-semibold">Summary</span>
+                    <span className="label-text font-semibold">
+                      Summary(สรุปเนื้อหา)
+                    </span>
                   </label>
                   <textarea
                     name="summary"
@@ -125,9 +138,14 @@ const Create = () => {
 
                 <div>
                   <label className="label">
-                    <span className="label-text font-semibold">Content</span>
+                    <span className="label-text font-semibold">Content(เนื้อหา)</span>
                   </label>
-                  <textarea
+                  <Editor
+                    value={content}
+                    onChange={handleContentChange}
+                    ref={editorRef}
+                  />
+                  {/* <textarea
                     name="content"
                     value={post.content}
                     onChange={handleChange}
@@ -135,7 +153,7 @@ const Create = () => {
                     className="textarea textarea-bordered w-full"
                     rows={6}
                     required
-                  />
+                  /> */}
                 </div>
               </div>
 
@@ -149,7 +167,7 @@ const Create = () => {
                   Reset
                 </button>
                 <button type="submit" className="btn btn-primary">
-                  Add Post
+                  เพิ่ม Post
                 </button>
               </div>
             </form>
