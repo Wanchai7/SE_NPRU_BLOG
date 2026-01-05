@@ -1,11 +1,12 @@
 import { useState, useEffect } from "react";
-import { useParams } from "react-router";
+import { useParams, useNavigate } from "react-router";
 import { UserContext } from "../context/UserContext";
 import { useContext } from "react";
 import Swal from "sweetalert2";
 import PostService from "../services/post.service";
 
 const PostDetail = () => {
+  const navigate = useNavigate();
   const { id } = useParams();
   const { userInfo } = useContext(UserContext);
 
@@ -34,6 +35,22 @@ const PostDetail = () => {
     };
     fetchpost();
   }, [id]);
+
+// Fucntion สำหรับลบโพสต์
+  const handleDelete = async () => {
+  const isSubmitted = window.confirm("Please Confirm To Delete Your Book!");
+  if (!isSubmitted) return;
+  try {
+    const response = await PostService.deletePost(post._id);
+    if (response.status === 200) {
+      alert("Post deleted successfully!");
+      navigate("/");
+    }
+  } catch (error) {
+    console.log(error);
+  }
+};
+
   return (
     <div className="post-page min-h-full min-w-full items-center justify-center p-4 pt-20">
       <div className="bg-white p-8 rounded-b-lg shadow-lg max-4xl w-full">
@@ -48,7 +65,7 @@ const PostDetail = () => {
               <a className="btn btn-warning" href={`/edit/${post?._id}`}>
                 Edit
               </a>
-              <a className="btn btn-error">Delete</a>
+              <a className="btn btn-error" onClick={handleDelete}>Delete</a>
             </div>
           )}
         </div>
