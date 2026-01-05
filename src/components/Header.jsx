@@ -40,7 +40,9 @@ const Header = () => {
             ))}
           </ul> */}
         </div>
-        <a className="btn btn-ghost text-xl">SE NPRU Blog</a>
+        <a href="/" className="btn btn-ghost text-xl">
+          SE NPRU Blog
+        </a>
       </div>
       <div className="navbar-center hidden lg:flex">
         {/* <ul className="menu menu-horizontal px-1">
@@ -53,7 +55,7 @@ const Header = () => {
       </div>
       {username ? (
         <div className="navbar-end space-x-2">
-          <a className="btn" href="login">
+          <a className="btn" href="create">
             Create a new post
           </a>
           <button className="btn" href="register" onClick={logOut}>

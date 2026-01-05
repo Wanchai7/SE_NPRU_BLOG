@@ -2,7 +2,7 @@ import api from "./api";
 const API_URL = import.meta.env.VITE_POST_URL;
 
 const getAllPosts = async () => {
-  return await api.get(API_URL);
+  return await api.get(API_URL + "/post");
 };
 const getById = async (id) => {
   return await api.get(API_URL + "/" + id);
