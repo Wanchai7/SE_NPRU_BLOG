@@ -9,7 +9,6 @@ const Home = () => {
     const fetchAllPost = async () => {
       try {
         const response = await PostService.getAllPosts();
-        console.log(response);
         if (response.status === 200) {
           setPosts(response.data);
         }

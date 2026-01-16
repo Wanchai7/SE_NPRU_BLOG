@@ -1,177 +1,139 @@
 import { useState, useRef } from "react";
-import PostService from "../services/post.service.js";
-import Swal from "sweetalert2";
 import { useNavigate } from "react-router";
-import Editor from "../components/Editor.jsx";
+import Swal from "sweetalert2";
+import PostService from "../services/post.service";
+import Editor from "../components/Editor";
 
 const Create = () => {
-  const navigate = useNavigate();
-  const editorRef = useRef(null);
-  const [content, setContent] = useState("");
-  const [post, setPost] = useState({
+  const [postDetail, setPostDetail] = useState({
     title: "",
     summary: "",
     content: "",
-    cover: "",
     file: null,
   });
-
+  const [content, setContent] = useState("");
+  const editorRef = useRef(null);
+  const navigate = useNavigate();
   const handleChange = (e) => {
     const { name, value } = e.target;
     if (name === "file") {
-      setPost({ ...post, [name]: e.target.files[0] });
+      setPostDetail({ ...postDetail, [name]: e.target.files[0] });
     } else {
-      setPost((prev) => ({ ...prev, [name]: value }));
+      setPostDetail({ ...postDetail, [name]: value });
     }
   };
-
   const handleContentChange = (value) => {
     setContent(value);
-    setPost({ ...post, content: content });
+    setPostDetail({ ...postDetail, content: content });
   };
 
-  const resetForm = () => {
-    setPost({
-      title: "",
-      summary: "",
-      content: "",
-      cover: "",
-    });
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
+  const handleSubmit = async () => {
     try {
-      const res = await PostService.createPost(post);
-
-      if (res.status === 201 || res.status === 200) {
-        await Swal.fire({
-          title: "เพิ่ม Post ใหม่",
-          text: "ยินดีด้วยคุณเพิ่ม post สำเร็จแล้วนะ",
-          icon: "สร้าง Post สำเร็จ",
+      const data = new FormData();
+      data.set("title", postDetail.title);
+      data.set("summary", postDetail.summary);
+      data.set("content", postDetail.content);
+      data.set("file", postDetail.file);
+      const response = await PostService.createPost(data);
+      if (response.status === 200) {
+        Swal.fire({
+          title: "Create Post",
+          text: "Create post successfully",
+          icon: "success",
+        }).then(() => {
+          setPostDetail({
+            title: "",
+            summary: "",
+            content: "",
+            file: null,
+          });
+          navigate("/");
         });
-        resetForm();
-        navigate("/");
       }
     } catch (error) {
-      await Swal.fire({
-        title: "Add new post",
-        text: error.response?.data?.message || "Request failed",
+      Swal.fire({
+        title: "Create Post",
+        text: error?.response?.data?.message || error.message,
         icon: "error",
       });
-      console.error("Create post error:", error);
     }
   };
-
   return (
-    <div className="min-h-screen flex items-center justify-center p-6 bg-base-200">
-      <div className="w-full max-w-6xl">
-        <div className="card bg-base-100 shadow-xl rounded-lg">
-          <div className="card-body">
-            <h1 className="text-3xl font-bold text-center mb-8">สร้าง Post</h1>
-            <form
-              onSubmit={handleSubmit}
-              className="grid grid-cols-1 md:grid-cols-3 gap-6"
-            >
-              {/* LEFT: COVER */}
-              <div className="md:col-span-1">
-                <label className="label">
-                  <span className="label-text font-semibold">
-                    Cover Image URL (รูปปก)
-                  </span>
-                </label>
-                <input
-                  type="text"
-                  name="cover"
-                  value={post.cover}
-                  onChange={handleChange}
-                  placeholder="https://example.com/image.jpg"
-                  className="input input-bordered w-full"
-                />
+    <div className="w-dvw min-w-full flex items-center justify-center p-4">
+      <div className="bg-white p-8 rounded-lg max-w-4xl w-full">
+        <h2 className="text-2xl font-bold mb-6 text-center text-gray-800">
+          Create New Post
+        </h2>
+        <div className="mb-4">
+          <label
+            htmlFor=""
+            className="block text-gray-700 text-sm font-bold mb-2"
+          >
+            Title
+          </label>
+          <input
+            type="text"
+            name="title"
+            value={postDetail.title}
+            onChange={handleChange}
+            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:out-line-none focus:shadow-outline"
+            required
+          />
+        </div>
+        <div className="mb-4">
+          <label
+            htmlFor=""
+            className="block text-gray-700 text-sm font-bold mb-2"
+          >
+            Summary
+          </label>
+          <input
+            type="text"
+            name="summary"
+            value={postDetail.summary}
+            onChange={handleChange}
+            className="shadow appearance-none border rounded input-lg  w-full py-2 px-3 text-gray-700 leading-tight focus:out-line-none focus:shadow-outline"
+            required
+          />
+        </div>
+        <div className="mb-4">
+          <label
+            htmlFor=""
+            className="block text-gray-700 text-sm font-bold mb-2"
+          >
+            Content
+          </label>
 
-                <div className="mt-4">
-                  <img
-                    src={
-                      post.cover ||
-                      "https://vaultproducts.ca/cdn/shop/products/4454FC90-DAF5-43EF-8ACA-A1FF04CE802D.jpg?v=1656626547"
-                    }
-                    alt="cover preview"
-                    className="object-contain h-56 w-full rounded-lg border"
-                  />
-                </div>
-              </div>
-
-              {/* RIGHT: FORM FIELDS */}
-              <div className="md:col-span-2 grid grid-cols-1 gap-4">
-                <div>
-                  <label className="label">
-                    <span className="label-text font-semibold">
-                      Title(ชื่อบทความ)
-                    </span>
-                  </label>
-                  <input
-                    type="text"
-                    name="title"
-                    value={post.title}
-                    onChange={handleChange}
-                    placeholder="Post title"
-                    className="input input-bordered w-full"
-                    required
-                  />
-                </div>
-                <div>
-                  <label className="label">
-                    <span className="label-text font-semibold">
-                      Summary(สรุปเนื้อหา)
-                    </span>
-                  </label>
-                  <textarea
-                    name="summary"
-                    value={post.summary}
-                    onChange={handleChange}
-                    placeholder="Short summary..."
-                    className="textarea textarea-bordered w-full"
-                    rows={3}
-                  />
-                </div>
-
-                <div>
-                  <label className="label">
-                    <span className="label-text font-semibold">Content(เนื้อหา)</span>
-                  </label>
-                  <Editor
-                    value={content}
-                    onChange={handleContentChange}
-                    ref={editorRef}
-                  />
-                  {/* <textarea
-                    name="content"
-                    value={post.content}
-                    onChange={handleChange}
-                    placeholder="Write your post content here..."
-                    className="textarea textarea-bordered w-full"
-                    rows={6}
-                    required
-                  /> */}
-                </div>
-              </div>
-
-              {/* ACTION BUTTONS */}
-              <div className="md:col-span-3 flex justify-center gap-4 mt-6">
-                <button
-                  type="button"
-                  className="btn btn-outline"
-                  onClick={resetForm}
-                >
-                  Reset
-                </button>
-                <button type="submit" className="btn btn-primary">
-                  เพิ่ม Post
-                </button>
-              </div>
-            </form>
+          <div className="h-64">
+            <Editor
+              value={content}
+              onChange={handleContentChange}
+              ref={editorRef}
+            />
           </div>
+        </div>
+        <div className="mb-4">
+          <label
+            htmlFor=""
+            className="block text-gray-700 text-sm font-bold mb-2"
+          >
+            Upload Image
+          </label>
+          <input
+            type="file"
+            name="file"
+            onChange={handleChange}
+            className="shadow appearance-none border rounded  w-full py-2 px-3 text-gray-700 leading-tight focus:out-line-none focus:shadow-outline"
+            required
+          />
+        </div>
+        <div className="flex item-center justify-between">
+          <button
+            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+            onClick={handleSubmit}
+          >
+            Create Post
+          </button>
         </div>
       </div>
     </div>

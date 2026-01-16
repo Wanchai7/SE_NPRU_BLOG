@@ -2,7 +2,7 @@ import api from "./api";
 const API_URL = import.meta.env.VITE_POST_URL;
 
 const getAllPosts = async () => {
-  return await api.get(API_URL + "/post");
+  return await api.get(API_URL);
 };
 const getById = async (id) => {
   return await api.get(API_URL + "/" + id);
@@ -11,7 +11,11 @@ const getByAuthorId = async (id) => {
   return await api.get(`${API_URL}/author/${id}`);
 };
 const createPost = async (post) => {
-  return await api.post(API_URL + "/post", post, { headers: { "Content-Type": "multipart/form-data" } });
+  return await api.post(API_URL, post, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  });
 };
 const updatePost = async (id, post) => {
   return await api.put(`${API_URL}/${id}`, post);

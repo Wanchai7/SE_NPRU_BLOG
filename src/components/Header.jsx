@@ -40,7 +40,7 @@ const Header = () => {
             ))}
           </ul> */}
         </div>
-        <a href="/" className="btn btn-ghost text-xl">
+        <a className="btn btn-ghost text-xl" href="/">
           SE NPRU Blog
         </a>
       </div>
@@ -55,19 +55,19 @@ const Header = () => {
       </div>
       {username ? (
         <div className="navbar-end space-x-2">
-          <a className="btn" href="create">
+          <a className="btn" href="/create">
             Create a new post
           </a>
-          <button className="btn" href="register" onClick={logOut}>
+          <button className="btn" href="/register" onClick={logOut}>
             Logout ({username})
           </button>
         </div>
       ) : (
         <div className="navbar-end space-x-2">
-          <a className="btn" href="login">
+          <a className="btn" href="/login">
             Login
           </a>
-          <a className="btn" href="register">
+          <a className="btn" href="/register">
             Register
           </a>
         </div>
